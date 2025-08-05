@@ -5,6 +5,7 @@ import { useFrame, ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 
 interface PaperMeshProps {
+  foldAngle?: number
   color?: string
   position?: [number, number, number]
   rotation?: [number, number, number]
@@ -13,6 +14,7 @@ interface PaperMeshProps {
 }
 
 export default function PaperMesh({ 
+  foldAngle = 0,
   color = '#f8f4e6', 
   position = [0, 0, 0], 
   rotation = [0, 0, 0], 
@@ -26,15 +28,17 @@ export default function PaperMesh({
   // Create origami paper geometry
   const geometry = new THREE.PlaneGeometry(2, 2, 8, 8)
   
-  // Create subtle fold effect
+  // Create subtle fold effect with proper null checks
   const positions = geometry.attributes.position
-  for (let i = 0; i < positions.count; i++) {
-    const x = positions.getX(i)
-    const y = positions.getY(i)
-    const z = Math.sin(x * Math.PI) * Math.cos(y * Math.PI) * 0.1
-    positions.setZ(i, z)
+  if (positions) {
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i)
+      const y = positions.getY(i)
+      const z = Math.sin(x * Math.PI) * Math.cos(y * Math.PI) * 0.1 + (foldAngle / 180) * Math.sin(x * Math.PI * 2) * 0.3
+      positions.setZ(i, z)
+    }
+    positions.needsUpdate = true
   }
-  positions.needsUpdate = true
 
   useFrame((state) => {
     if (meshRef.current) {
