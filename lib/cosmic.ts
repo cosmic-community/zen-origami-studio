@@ -47,6 +47,11 @@ export async function getOrigamiTutorials(): Promise<CosmicObject[]> {
   }
 }
 
+// Get all tutorials (alias for getOrigamiTutorials for API compatibility)
+export async function getTutorials(): Promise<CosmicObject[]> {
+  return getOrigamiTutorials()
+}
+
 // Get single origami tutorial by slug
 export async function getOrigamiTutorial(slug: string): Promise<CosmicObject | null> {
   try {
@@ -75,8 +80,8 @@ export async function getTutorialSteps(tutorialId?: string): Promise<CosmicObjec
       .props(['id', 'title', 'slug', 'metadata', 'thumbnail'])
       .depth(1)
     
-    // Sort by step number if available
-    const sortedObjects = (objects || []).sort((a, b) => {
+    // Sort by step number if available - fixed with proper typing
+    const sortedObjects = (objects || []).sort((a: CosmicObject, b: CosmicObject) => {
       const stepA = a.metadata?.step_number || 0
       const stepB = b.metadata?.step_number || 0
       return stepA - stepB
