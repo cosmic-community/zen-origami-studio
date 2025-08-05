@@ -1,19 +1,53 @@
 'use client'
 
-import dynamic from 'next/dynamic'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import Navigation from '@/components/Navigation'
+import AudioControls from '@/components/AudioControls'
+import SakuraPetals from '@/components/SakuraPetals'
+import Footer from '@/components/Footer'
+import { useState } from 'react'
 
-// Dynamically import the 3D component to avoid SSR issues
-const InteractivePaperTool = dynamic(() => import('@/components/InteractivePaperTool'), {
-  ssr: false,
-  loading: () => (
-    <div className="zen-card p-8 max-w-4xl mx-auto">
-      <div className="h-96 w-full rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-zen-sage/10 to-zen-cream/20 flex items-center justify-center">
-        <div className="animate-pulse text-zen-sage">Loading 3D experience...</div>
-      </div>
+const inter = Inter({ subsets: ['latin'] })
+
+interface ClientWrapperProps {
+  children: React.ReactNode
+}
+
+export default function ClientWrapper({ children }: ClientWrapperProps) {
+  // Audio controls state
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [volume, setVolume] = useState(0.7)
+
+  const handleTogglePlay = () => {
+    setIsPlaying(!isPlaying)
+  }
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume)
+  }
+
+  return (
+    <div className={`${inter.className} bg-gradient-to-br from-sage-50 to-bamboo-50 min-h-screen`}>
+      {/* Navigation */}
+      <Navigation />
+      
+      {/* Floating sakura petals */}
+      <SakuraPetals />
+      
+      {/* Audio controls */}  
+      <AudioControls 
+        isPlaying={isPlaying}
+        volume={volume}
+        onTogglePlay={handleTogglePlay}
+        onVolumeChange={handleVolumeChange}
+      />
+      
+      {/* Main content */}
+      {children}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   )
-})
-
-export default function ClientWrapper() {
-  return <InteractivePaperTool />
 }
