@@ -2,16 +2,16 @@
 
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Mesh, PlaneGeometry, MeshPhongMaterial } from 'three'
+import { Group, PlaneGeometry, MeshPhongMaterial } from 'three'
 
 interface PaperMeshProps {
   foldAngle: number
 }
 
 export default function PaperMesh({ foldAngle }: PaperMeshProps) {
-  const meshRef = useRef<Mesh>(null)
-  const leftHalfRef = useRef<Mesh>(null)
-  const rightHalfRef = useRef<Mesh>(null)
+  const groupRef = useRef<Group>(null)
+  const leftHalfRef = useRef<Group>(null)
+  const rightHalfRef = useRef<Group>(null)
 
   // Create geometry for the paper halves
   const geometry = useMemo(() => new PlaneGeometry(1, 2, 10, 10), [])
@@ -42,28 +42,30 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
   })
 
   return (
-    <group ref={meshRef}>
+    <group ref={groupRef}>
       {/* Left half of the paper */}
-      <mesh
-        ref={leftHalfRef}
-        geometry={geometry}
-        material={material}
-        position={[-0.5, 0, 0]}
-        scale={[0.5, 1, 1]}
-        castShadow
-        receiveShadow
-      />
+      <group ref={leftHalfRef}>
+        <mesh
+          geometry={geometry}
+          material={material}
+          position={[-0.5, 0, 0]}
+          scale={[0.5, 1, 1]}
+          castShadow
+          receiveShadow
+        />
+      </group>
       
       {/* Right half of the paper */}
-      <mesh
-        ref={rightHalfRef}
-        geometry={geometry}
-        material={material}
-        position={[0.5, 0, 0]}
-        scale={[0.5, 1, 1]}
-        castShadow
-        receiveShadow
-      />
+      <group ref={rightHalfRef}>
+        <mesh
+          geometry={geometry}
+          material={material}
+          position={[0.5, 0, 0]}
+          scale={[0.5, 1, 1]}
+          castShadow
+          receiveShadow
+        />
+      </group>
       
       {/* Fold line indicator */}
       <line>

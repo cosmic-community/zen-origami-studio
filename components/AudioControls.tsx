@@ -3,6 +3,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Volume2, VolumeX, Play, Pause, Music, SkipForward } from 'lucide-react'
 
+interface AudioControlsProps {
+  isPlaying: boolean
+  volume: number
+  onTogglePlay: () => void
+  onVolumeChange: (newVolume: number) => void
+}
+
 const AMBIENT_TRACKS = [
   {
     id: 'forest',
@@ -24,9 +31,7 @@ const AMBIENT_TRACKS = [
   }
 ]
 
-export default function AudioControls() {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [volume, setVolume] = useState(0.3)
+export default function AudioControls({ isPlaying, volume, onTogglePlay, onVolumeChange }: AudioControlsProps) {
   const [isMuted, setIsMuted] = useState(false)
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -80,15 +85,15 @@ export default function AudioControls() {
     try {
       if (isPlaying) {
         audioRef.current.pause()
-        setIsPlaying(false)
+        onTogglePlay()
       } else {
         await audioRef.current.play()
-        setIsPlaying(true)
+        onTogglePlay()
       }
     } catch (error) {
       console.log('Audio playback not available in demo')
       // For demo purposes, still toggle the visual state
-      setIsPlaying(!isPlaying)
+      onTogglePlay()
     }
   }
 
@@ -98,7 +103,7 @@ export default function AudioControls() {
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value)
-    setVolume(newVolume)
+    onVolumeChange(newVolume)
     if (newVolume === 0) {
       setIsMuted(true)
     } else if (isMuted) {
@@ -169,8 +174,8 @@ export default function AudioControls() {
           <div className="mt-4 space-y-4">
             {/* Track Info */}
             <div className="text-center">
-              <h4 className="zen-text font-medium text-sm">{currentTrack.name}</h4>
-              <p className="zen-text-secondary text-xs mt-1">{currentTrack.description}</p>
+              <h4 className="zen-text font-medium text-sm">{currentTrack?.name || 'No Track'}</h4>
+              <p className="zen-text-secondary text-xs mt-1">{currentTrack?.description || ''}</p>
             </div>
 
             {/* Volume and Controls */}

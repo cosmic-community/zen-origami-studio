@@ -1,115 +1,135 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import InteractivePaperTool from '@/components/InteractivePaperTool';
-import AudioControls from '@/components/AudioControls';
+import { useState, Suspense } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Environment } from '@react-three/drei'
+import PaperMesh from '@/components/PaperMesh'
+import AudioControls from '@/components/AudioControls'
+import Loading from '@/components/Loading'
 
-export default function InteractiveToolPage() {
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
-  const [volume, setVolume] = useState(0.3);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    // Initialize audio settings from localStorage if available
-    const savedVolume = localStorage.getItem('zen-audio-volume');
-    const savedEnabled = localStorage.getItem('zen-audio-enabled');
-    
-    if (savedVolume) {
-      setVolume(parseFloat(savedVolume));
-    }
-    
-    if (savedEnabled) {
-      setIsAudioEnabled(savedEnabled === 'true');
-    }
-  }, []);
+export default function InteractiveTool() {
+  const [foldAngle, setFoldAngle] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [volume, setVolume] = useState(0.3)
 
   const handleTogglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
+    setIsPlaying(!isPlaying)
+  }
 
   const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
-    localStorage.setItem('zen-audio-volume', newVolume.toString());
-  };
+    setVolume(newVolume)
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 to-bamboo-50">
+    <div className="min-h-screen bg-gradient-to-br from-zen-50 to-sage-50">
+      {/* Audio Controls */}
+      <AudioControls
+        isPlaying={isPlaying}
+        volume={volume}
+        onTogglePlay={handleTogglePlay}
+        onVolumeChange={handleVolumeChange}
+      />
+
       {/* Header */}
-      <div className="pt-24 pb-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-light text-zen-900 mb-6">
-            Interactive Paper Tool
-          </h1>
-          <p className="text-xl text-zen-600 max-w-2xl mx-auto leading-relaxed mb-8">
-            Experience the meditative art of virtual origami. Practice folding techniques, 
-            explore paper properties, and find your center through digital mindfulness.
-          </p>
-          
-          {/* Audio Controls */}
-          <div className="flex justify-center mb-8">
-            <AudioControls
-              isPlaying={isPlaying}
-              volume={volume}
-              onTogglePlay={handleTogglePlay}
-              onVolumeChange={handleVolumeChange}
-            />
+      <div className="relative z-10 pt-24 pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="zen-heading text-4xl sm:text-5xl lg:text-6xl zen-text-primary mb-6">
+              Interactive Paper Folding
+            </h1>
+            <p className="zen-text-secondary text-lg sm:text-xl max-w-3xl mx-auto">
+              Experience the meditative art of origami through interactive 3D visualization. 
+              Watch as virtual paper transforms with your guidance, just like in traditional folding.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Interactive Tool */}
-      <div className="pb-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-zen-200 shadow-xl">
-            <InteractivePaperTool />
-          </div>
+      <div className="flex flex-col lg:flex-row min-h-[600px] relative z-10">
+        {/* 3D Canvas */}
+        <div className="flex-1 relative">
+          <Suspense fallback={<Loading />}>
+            <Canvas
+              camera={{ position: [0, 0, 5], fov: 50 }}
+              className="w-full h-full min-h-[400px] lg:min-h-[600px]"
+            >
+              <ambientLight intensity={0.6} />
+              <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+              <PaperMesh foldAngle={foldAngle} />
+              <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+              <Environment preset="studio" />
+            </Canvas>
+          </Suspense>
         </div>
-      </div>
 
-      {/* Instructions */}
-      <div className="pb-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-zen-200">
-            <h3 className="text-2xl font-light text-zen-900 mb-6 text-center">
-              How to Use the Interactive Tool
-            </h3>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-lg font-medium text-zen-800 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-zen-500 text-white rounded-full flex items-center justify-center text-sm">1</span>
-                  Mouse Controls
-                </h4>
-                <ul className="text-zen-600 space-y-2 ml-8">
-                  <li>• Drag to rotate the paper</li>
-                  <li>• Scroll to zoom in/out</li>
-                  <li>• Click and hold to fold</li>
-                  <li>• Right-click to unfold</li>
-                </ul>
-              </div>
+        {/* Controls Panel */}
+        <div className="lg:w-80 bg-white/90 backdrop-blur-md border-l border-zen-200/50 p-6">
+          <div className="space-y-6">
+            <div>
+              <h3 className="zen-heading text-xl zen-text-primary mb-4">Paper Controls</h3>
               
-              <div>
-                <h4 className="text-lg font-medium text-zen-800 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-zen-500 text-white rounded-full flex items-center justify-center text-sm">2</span>
-                  Mindful Practice
-                </h4>
-                <ul className="text-zen-600 space-y-2 ml-8">
-                  <li>• Take slow, deep breaths</li>
-                  <li>• Focus on each fold</li>
-                  <li>• Observe the paper's transformation</li>
-                  <li>• Find peace in the process</li>
-                </ul>
+              <div className="space-y-4">
+                <div>
+                  <label className="block zen-text text-sm font-medium mb-2">
+                    Fold Angle: {foldAngle}°
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="180"
+                    value={foldAngle}
+                    onChange={(e) => setFoldAngle(Number(e.target.value))}
+                    className="w-full h-2 bg-zen-200 rounded-lg appearance-none cursor-pointer zen-focus"
+                  />
+                  <div className="flex justify-between text-xs zen-text-secondary mt-1">
+                    <span>Flat</span>
+                    <span>Folded</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setFoldAngle(0)}
+                    className="zen-button-secondary text-sm py-2"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    onClick={() => setFoldAngle(90)}
+                    className="zen-button-primary text-sm py-2"
+                  >
+                    90° Fold
+                  </button>
+                </div>
               </div>
             </div>
-            
-            <div className="mt-8 p-6 bg-zen-100 rounded-xl border-l-4 border-zen-400">
-              <p className="text-zen-700 italic text-center">
-                "The goal is not perfection, but presence. Let each fold be a moment of mindfulness."
-              </p>
+
+            <div className="border-t border-zen-200 pt-6">
+              <h4 className="zen-text font-medium mb-3">Meditation Tips</h4>
+              <div className="space-y-3 text-sm zen-text-secondary">
+                <p className="bg-zen-50 rounded-lg p-3">
+                  🧘 <strong>Breathe mindfully</strong> as you adjust the fold. Each movement is a meditation.
+                </p>
+                <p className="bg-sage-50 rounded-lg p-3">
+                  🌸 <strong>Observe transformation</strong> - notice how simple movements create beauty.
+                </p>
+                <p className="bg-sakura-50 rounded-lg p-3">
+                  ✨ <strong>Practice patience</strong> - origami teaches us that art takes time.
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-zen-200 pt-6">
+              <h4 className="zen-text font-medium mb-3">Camera Controls</h4>
+              <div className="text-sm zen-text-secondary space-y-2">
+                <p><strong>Rotate:</strong> Click and drag</p>
+                <p><strong>Zoom:</strong> Mouse wheel or pinch</p>
+                <p><strong>Pan:</strong> Right-click and drag</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
