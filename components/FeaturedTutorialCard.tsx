@@ -1,7 +1,7 @@
-import { OrigarniTutorial } from '@/types'
+import { OrigamiTutorial } from '@/types'
 
 interface FeaturedTutorialCardProps {
-  tutorial: OrigarniTutorial
+  tutorial: OrigamiTutorial
 }
 
 export default function FeaturedTutorialCard({ tutorial }: FeaturedTutorialCardProps) {

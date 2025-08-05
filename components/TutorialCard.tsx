@@ -1,8 +1,8 @@
-import { OrigarniTutorial } from '@/types'
+import { OrigamiTutorial } from '@/types'
 import { Clock, Star } from 'lucide-react'
 
 interface TutorialCardProps {
-  tutorial: OrigarniTutorial
+  tutorial: OrigamiTutorial
 }
 
 export default function TutorialCard({ tutorial }: TutorialCardProps) {
