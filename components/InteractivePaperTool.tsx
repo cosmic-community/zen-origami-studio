@@ -1,124 +1,148 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
-import { RotateCcw, Info } from 'lucide-react'
-import PaperMesh from '@/components/PaperMesh'
-import Loading from '@/components/Loading'
+import { OrbitControls, Environment } from '@react-three/drei'
+import PaperMesh from './PaperMesh'
+import { Play, Pause, RotateCcw } from 'lucide-react'
 
 export default function InteractivePaperTool() {
   const [foldAngle, setFoldAngle] = useState(0)
-  const [showInstructions, setShowInstructions] = useState(true)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [animationFrame, setAnimationFrame] = useState(0)
 
-  const resetPaper = () => {
-    setFoldAngle(0)
+  const handleAnimate = () => {
+    if (isAnimating) {
+      setIsAnimating(false)
+      return
+    }
+
+    setIsAnimating(true)
+    let frame = 0
+    const animate = () => {
+      if (frame < 100) {
+        setFoldAngle((frame / 100) * 180)
+        setAnimationFrame(frame)
+        frame++
+        setTimeout(() => requestAnimationFrame(animate), 50)
+      } else {
+        setIsAnimating(false)
+      }
+    }
+    animate()
   }
 
-  const handleFold = () => {
-    setFoldAngle(prev => Math.min(prev + 15, 180))
+  const handleReset = () => {
+    setIsAnimating(false)
+    setFoldAngle(0)
+    setAnimationFrame(0)
   }
 
   return (
-    <div className="zen-card max-w-6xl mx-auto">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="zen-heading text-2xl zen-text-primary">
-            3D Paper Folding Simulator
-          </h3>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setShowInstructions(!showInstructions)}
-              className="p-2 zen-text-secondary hover:text-zen-600 transition-colors"
-              aria-label="Toggle instructions"
-            >
-              <Info size={20} />
-            </button>
-            <button
-              onClick={resetPaper}
-              className="p-2 zen-text-secondary hover:text-zen-600 transition-colors"
-              aria-label="Reset paper"
-            >
-              <RotateCcw size={20} />
-            </button>
+    <div className="zen-card p-8 max-w-4xl mx-auto">
+      {/* 3D Canvas */}
+      <div className="h-96 w-full rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-zen-sage/10 to-zen-cream/20">
+        <Suspense fallback={
+          <div className="h-full flex items-center justify-center">
+            <div className="animate-pulse text-zen-sage">Loading 3D experience...</div>
           </div>
+        }>
+          <Canvas
+            camera={{ position: [0, 0, 5], fov: 50 }}
+            shadows
+          >
+            <ambientLight intensity={0.4} />
+            <directionalLight
+              position={[10, 10, 5]}
+              intensity={0.8}
+              castShadow
+              shadow-mapSize-width={2048}
+              shadow-mapSize-height={2048}
+            />
+            <PaperMesh foldAngle={foldAngle} />
+            <OrbitControls
+              enableZoom={true}
+              enablePan={false}
+              minDistance={3}
+              maxDistance={8}
+            />
+            <Environment preset="studio" />
+          </Canvas>
+        </Suspense>
+      </div>
+
+      {/* Controls */}
+      <div className="space-y-6">
+        {/* Manual Control */}
+        <div>
+          <label className="block zen-text text-sm font-medium mb-3">
+            Fold Angle: {Math.round(foldAngle)}°
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="180"
+            value={foldAngle}
+            onChange={(e) => setFoldAngle(Number(e.target.value))}
+            className="w-full h-2 bg-zen-sage/20 rounded-lg appearance-none cursor-pointer slider"
+            disabled={isAnimating}
+          />
         </div>
-        
-        {showInstructions && (
-          <div className="bg-zen-50/50 rounded-xl p-4 mb-6 border border-zen-200/50">
-            <p className="zen-text-secondary text-sm leading-relaxed">
-              <strong>Instructions:</strong> Click the "Fold" button to create a valley fold. 
-              Use your mouse to rotate and zoom the 3D view. This simulator demonstrates 
-              the basic mechanics of paper folding in a virtual environment.
-            </p>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 justify-center">
+          <button
+            onClick={handleAnimate}
+            disabled={isAnimating}
+            className="zen-button flex items-center gap-2 px-6 py-3"
+          >
+            {isAnimating ? (
+              <>
+                <Pause className="w-4 h-4" />
+                Pause Animation
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4" />
+                Animate Fold
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleReset}
+            className="zen-button-outline flex items-center gap-2 px-6 py-3"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Reset
+          </button>
+        </div>
+
+        {/* Progress indicator */}
+        {isAnimating && (
+          <div className="text-center">
+            <div className="zen-text-secondary text-sm mb-2">
+              Animation Progress: {animationFrame}%
+            </div>
+            <div className="w-full bg-zen-sage/20 rounded-full h-2">
+              <div
+                className="bg-zen-sage h-2 rounded-full transition-all duration-100"
+                style={{ width: `${animationFrame}%` }}
+              />
+            </div>
           </div>
         )}
       </div>
 
-      <div className="relative">
-        {/* 3D Canvas */}
-        <div className="w-full h-96 rounded-xl overflow-hidden bg-gradient-to-br from-zen-50 to-sage-50 border border-zen-200/50">
-          <Suspense fallback={<Loading />}>
-            <Canvas shadows>
-              <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-              <OrbitControls
-                enablePan={true}
-                enableZoom={true}
-                enableRotate={true}
-                minDistance={2}
-                maxDistance={10}
-              />
-              
-              {/* Lighting */}
-              <ambientLight intensity={0.6} />
-              <directionalLight
-                position={[5, 5, 5]}
-                intensity={0.8}
-                castShadow
-                shadow-mapSize={[1024, 1024]}
-              />
-              <pointLight position={[-5, 5, 5]} intensity={0.4} />
-              
-              {/* Paper mesh component */}
-              <PaperMesh foldAngle={foldAngle} />
-            </Canvas>
-          </Suspense>
-        </div>
-
-        {/* Controls */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={handleFold}
-              disabled={foldAngle >= 180}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                foldAngle >= 180
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'zen-button transform hover:scale-105'
-              }`}
-            >
-              Fold Paper
-            </button>
-            
-            <div className="zen-text-secondary text-sm">
-              Fold Angle: {foldAngle}°
-            </div>
-          </div>
-          
-          <div className="zen-text-secondary text-sm text-center sm:text-right">
-            <div>Click and drag to rotate • Scroll to zoom</div>
-            <div className="text-xs mt-1 italic">
-              Experience the meditative flow of paper folding
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Inspirational quote */}
-      <div className="mt-8 text-center">
-        <p className="font-calligraphy text-lg zen-text-primary italic">
-          "In the folding of paper, we find the unfolding of patience."
-        </p>
+      {/* Instructions */}
+      <div className="mt-8 p-6 bg-zen-cream/30 rounded-xl">
+        <h3 className="zen-heading text-lg mb-3">How to Use</h3>
+        <ul className="zen-text-secondary space-y-2 text-sm">
+          <li>• Drag the slider to manually fold the paper</li>
+          <li>• Click "Animate Fold" to watch an automatic folding sequence</li>
+          <li>• Use your mouse to rotate and zoom the 3D view</li>
+          <li>• Click "Reset" to return to the flat position</li>
+        </ul>
       </div>
     </div>
   )

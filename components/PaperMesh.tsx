@@ -2,7 +2,6 @@
 
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Mesh, PlaneGeometry, MeshStandardMaterial } from 'three'
 import * as THREE from 'three'
 
 interface PaperMeshProps {
@@ -10,15 +9,15 @@ interface PaperMeshProps {
 }
 
 export default function PaperMesh({ foldAngle }: PaperMeshProps) {
-  const leftHalfRef = useRef<Mesh>(null)
-  const rightHalfRef = useRef<Mesh>(null)
+  const leftHalfRef = useRef<THREE.Mesh>(null)
+  const rightHalfRef = useRef<THREE.Mesh>(null)
 
   // Create geometry for paper halves
-  const geometry = useMemo(() => new PlaneGeometry(1, 2, 10, 10), [])
+  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 2, 10, 10), [])
   
   // Create paper material
   const material = useMemo(() => {
-    return new MeshStandardMaterial({
+    return new THREE.MeshStandardMaterial({
       color: '#f8faf8',
       side: THREE.DoubleSide,
       roughness: 0.8,
@@ -65,8 +64,8 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
         receiveShadow
       />
       
-      {/* Fold line indicator - using simple geometry */}
-      <mesh position={[0, 0, 0.01]}>
+      {/* Fold line indicator */}
+      <line position={[0, 0, 0.01]}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -76,7 +75,7 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
           />
         </bufferGeometry>
         <lineBasicMaterial color="#7fa67f" />
-      </mesh>
+      </line>
     </group>
   )
 }
