@@ -17,7 +17,7 @@ export async function getTutorials() {
   } catch (error) {
     console.error('Error fetching tutorials:', error)
     // Check if this is a 404 error (no objects found)
-    if (error.status === 404) {
+    if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
     throw error
@@ -34,7 +34,7 @@ export async function getCollections() {
   } catch (error) {
     console.error('Error fetching collections:', error)
     // Check if this is a 404 error (no objects found)
-    if (error.status === 404) {
+    if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
     throw error
@@ -51,7 +51,7 @@ export async function getPaperTypes() {
   } catch (error) {
     console.error('Error fetching paper types:', error)
     // Check if this is a 404 error (no objects found)
-    if (error.status === 404) {
+    if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
     throw error
@@ -74,7 +74,7 @@ export async function getTutorialSteps(tutorialId?: string) {
   } catch (error) {
     console.error('Error fetching tutorial steps:', error)
     // Check if this is a 404 error (no objects found)
-    if (error.status === 404) {
+    if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
     throw error
