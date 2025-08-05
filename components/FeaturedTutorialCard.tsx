@@ -16,7 +16,7 @@ export default function FeaturedTutorialCard({ tutorial }: FeaturedTutorialCardP
         <div className="relative overflow-hidden rounded-xl mb-6">
           <img
             src={`${imageUrl}?w=800&h=600&fit=crop&auto=format,compress`}
-            alt={tutorial.title}
+            alt={tutorial.title || 'Featured Tutorial'}
             className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110 filter-paper"
             width={400}
             height={300}
@@ -28,7 +28,7 @@ export default function FeaturedTutorialCard({ tutorial }: FeaturedTutorialCardP
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="zen-heading text-2xl zen-text-primary">
-            {tutorial.title}
+            {tutorial.title || 'Featured Tutorial'}
           </h3>
           {difficulty && (
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${

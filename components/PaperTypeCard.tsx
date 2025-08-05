@@ -16,7 +16,7 @@ export default function PaperTypeCard({ paperType }: PaperTypeCardProps) {
         <div className="relative overflow-hidden rounded-xl mb-4">
           <img
             src={`${imageUrl}?w=600&h=400&fit=crop&auto=format,compress`}
-            alt={paperType.title}
+            alt={paperType.title || 'Paper Type'}
             className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110 filter-paper"
             width={300}
             height={200}
@@ -35,7 +35,7 @@ export default function PaperTypeCard({ paperType }: PaperTypeCardProps) {
       
       <div className="space-y-4">
         <h3 className="zen-heading text-xl zen-text-primary group-hover:text-zen-600 transition-colors">
-          {paperType.title}
+          {paperType.title || 'Untitled Paper Type'}
         </h3>
         
         {description && (

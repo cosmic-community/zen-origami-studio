@@ -16,7 +16,11 @@ export async function getTutorials() {
     return objects || []
   } catch (error) {
     console.error('Error fetching tutorials:', error)
-    return []
+    // Check if this is a 404 error (no objects found)
+    if (error.status === 404) {
+      return []
+    }
+    throw error
   }
 }
 
@@ -29,7 +33,11 @@ export async function getCollections() {
     return objects || []
   } catch (error) {
     console.error('Error fetching collections:', error)
-    return []
+    // Check if this is a 404 error (no objects found)
+    if (error.status === 404) {
+      return []
+    }
+    throw error
   }
 }
 
@@ -42,23 +50,34 @@ export async function getPaperTypes() {
     return objects || []
   } catch (error) {
     console.error('Error fetching paper types:', error)
-    return []
+    // Check if this is a 404 error (no objects found)
+    if (error.status === 404) {
+      return []
+    }
+    throw error
   }
 }
 
-export async function getTutorialSteps(tutorialId: string) {
+export async function getTutorialSteps(tutorialId?: string) {
   try {
+    let query: any = { type: 'tutorial-steps' }
+    
+    if (tutorialId) {
+      query['metadata.tutorial'] = tutorialId
+    }
+    
     const { objects } = await cosmic.objects
-      .find({ 
-        type: 'tutorial-steps',
-        'metadata.tutorial': tutorialId
-      })
+      .find(query)
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
     return objects || []
   } catch (error) {
     console.error('Error fetching tutorial steps:', error)
-    return []
+    // Check if this is a 404 error (no objects found)
+    if (error.status === 404) {
+      return []
+    }
+    throw error
   }
 }
 

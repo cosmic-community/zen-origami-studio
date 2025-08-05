@@ -1,5 +1,5 @@
 import { OrigamiTutorial } from '@/types'
-import { Clock, Star } from 'lucide-react'
+import { Clock } from 'lucide-react'
 
 interface TutorialCardProps {
   tutorial: OrigamiTutorial
@@ -32,7 +32,7 @@ export default function TutorialCard({ tutorial }: TutorialCardProps) {
         <div className="relative overflow-hidden rounded-xl mb-4">
           <img
             src={`${imageUrl}?w=600&h=400&fit=crop&auto=format,compress`}
-            alt={tutorial.title}
+            alt={tutorial.title || 'Origami Tutorial'}
             className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110 filter-paper"
             width={300}
             height={200}
@@ -51,7 +51,7 @@ export default function TutorialCard({ tutorial }: TutorialCardProps) {
       
       <div className="space-y-3">
         <h3 className="zen-heading text-xl zen-text-primary group-hover:text-zen-600 transition-colors">
-          {tutorial.title}
+          {tutorial.title || 'Untitled Tutorial'}
         </h3>
         
         {tutorial.metadata?.description && (

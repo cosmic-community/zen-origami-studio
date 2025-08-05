@@ -17,21 +17,27 @@ export interface CosmicObject {
   bucket?: string;
 }
 
+// Image interface for consistent typing
+export interface CosmicImage {
+  url: string;
+  imgix_url: string;
+}
+
+// Difficulty level interface
+export interface DifficultyLevel {
+  key: string;
+  value: 'Beginner' | 'Intermediate' | 'Advanced';
+}
+
 // Specific object types with proper metadata interfaces
 export interface OrigamiTutorial extends CosmicObject {
   type: 'origami-tutorials';
   metadata: {
     tutorial_name?: string;
     description?: string;
-    difficulty_level?: {
-      key: string;
-      value: 'Beginner' | 'Intermediate' | 'Advanced';
-    };
+    difficulty_level?: DifficultyLevel;
     estimated_time?: string;
-    final_result_image?: {
-      url: string;
-      imgix_url: string;
-    };
+    final_result_image?: CosmicImage;
     paper_type?: PaperType | string;
     collection?: Collection | string;
     meditative_message?: string;
@@ -44,10 +50,7 @@ export interface TutorialStep extends CosmicObject {
     step_number?: number;
     step_title?: string;
     instructions?: string;
-    diagram_image?: {
-      url: string;
-      imgix_url: string;
-    };
+    diagram_image?: CosmicImage;
     tutorial?: OrigamiTutorial;
     mindful_tip?: string;
   };
@@ -59,10 +62,7 @@ export interface Collection extends CosmicObject {
     collection_name?: string;
     theme_description?: string;
     season_occasion?: string;
-    collection_image?: {
-      url: string;
-      imgix_url: string;
-    };
+    collection_image?: CosmicImage;
     inspirational_quote?: string;
   };
 }
@@ -73,16 +73,13 @@ export interface PaperType extends CosmicObject {
     paper_name?: string;
     description?: string;
     best_for?: string;
-    paper_image?: {
-      url: string;
-      imgix_url: string;
-    };
+    paper_image?: CosmicImage;
     weight_gsm?: string;
   };
 }
 
 // Type literals for difficulty levels
-export type DifficultyLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+export type DifficultyLevelValue = 'Beginner' | 'Intermediate' | 'Advanced';
 
 // API response types
 export interface CosmicResponse<T> {

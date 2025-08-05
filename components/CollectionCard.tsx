@@ -16,7 +16,7 @@ export default function CollectionCard({ collection }: CollectionCardProps) {
         <div className="relative overflow-hidden rounded-xl mb-6">
           <img
             src={`${imageUrl}?w=800&h=500&fit=crop&auto=format,compress`}
-            alt={collection.title}
+            alt={collection.title || 'Origami Collection'}
             className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110 filter-paper"
             width={400}
             height={250}
@@ -35,7 +35,7 @@ export default function CollectionCard({ collection }: CollectionCardProps) {
       
       <div className="space-y-4">
         <h3 className="zen-heading text-2xl zen-text-primary group-hover:text-zen-600 transition-colors">
-          {collection.title}
+          {collection.title || 'Untitled Collection'}
         </h3>
         
         {themeDescription && (
