@@ -25,6 +25,18 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
     })
   }, [])
 
+  // Create fold line geometry
+  const lineGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry()
+    const points = new Float32Array([0, -1, 0, 0, 1, 0])
+    geometry.setAttribute('position', new THREE.BufferAttribute(points, 3))
+    return geometry
+  }, [])
+
+  const lineMaterial = useMemo(() => {
+    return new THREE.LineBasicMaterial({ color: '#7fa67f' })
+  }, [])
+
   // Animate the fold
   useFrame((state) => {
     if (leftHalfRef.current && rightHalfRef.current) {
@@ -65,17 +77,11 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
       />
       
       {/* Fold line indicator */}
-      <line position={[0, 0, 0.01]}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={2}
-            array={new Float32Array([0, -1, 0, 0, 1, 0])}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#7fa67f" />
-      </line>
+      <line
+        geometry={lineGeometry}
+        material={lineMaterial}
+        position={[0, 0, 0.01]}
+      />
     </group>
   )
 }
