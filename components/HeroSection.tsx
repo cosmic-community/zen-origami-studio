@@ -1,9 +1,37 @@
-import { getTutorials } from '@/lib/cosmic'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { OrigamiTutorial } from '@/types'
 import FeaturedTutorialCard from '@/components/FeaturedTutorialCard'
 
-export default async function HeroSection() {
-  const tutorials = await getTutorials()
-  const featuredTutorial = tutorials[0] // Use first tutorial as featured
+export default function HeroSection() {
+  const [featuredTutorial, setFeaturedTutorial] = useState<OrigamiTutorial | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchTutorials() {
+      try {
+        const response = await fetch('/api/tutorials')
+        const tutorials = await response.json()
+        if (tutorials.length > 0) {
+          setFeaturedTutorial(tutorials[0])
+        }
+      } catch (error) {
+        console.error('Error fetching tutorials:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTutorials()
+  }, [])
+
+  const scrollToSection = (selector: string) => {
+    const element = document.querySelector(selector)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center pt-16">
@@ -28,13 +56,13 @@ export default async function HeroSection() {
           {/* Call to action buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 gentle-slide">
             <button
-              onClick={() => document.querySelector('#interactive')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('#interactive')}
               className="zen-button text-lg px-8 py-4"
             >
               Try Interactive Tool
             </button>
             <button
-              onClick={() => document.querySelector('#tutorials')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('#tutorials')}
               className="zen-button-secondary text-lg px-8 py-4"
             >
               Browse Tutorials
@@ -42,7 +70,7 @@ export default async function HeroSection() {
           </div>
           
           {/* Featured tutorial card */}
-          {featuredTutorial && (
+          {!loading && featuredTutorial && (
             <div className="meditation-fade">
               <h2 className="zen-heading text-2xl md:text-3xl mb-8 zen-text-primary">
                 Featured Tutorial
@@ -63,4 +91,3 @@ export default async function HeroSection() {
       </div>
     </div>
   )
-}
