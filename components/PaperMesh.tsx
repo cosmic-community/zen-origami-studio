@@ -1,83 +1,94 @@
 'use client'
 
-import { useRef, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useRef, useState } from 'react'
+import { useFrame, ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 
 interface PaperMeshProps {
-  foldAngle: number
+  color?: string
+  position?: [number, number, number]
+  rotation?: [number, number, number]
+  scale?: number
+  interactive?: boolean
 }
 
-export default function PaperMesh({ foldAngle }: PaperMeshProps) {
-  const leftHalfRef = useRef<THREE.Mesh>(null)
-  const rightHalfRef = useRef<THREE.Mesh>(null)
-  const groupRef = useRef<THREE.Group>(null)
+export default function PaperMesh({ 
+  color = '#f8f4e6', 
+  position = [0, 0, 0], 
+  rotation = [0, 0, 0], 
+  scale = 1,
+  interactive = true 
+}: PaperMeshProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const [hovered, setHovered] = useState(false)
+  const [clicked, setClicked] = useState(false)
 
-  // Create geometry for paper halves
-  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 2, 10, 10), [])
+  // Create origami paper geometry
+  const geometry = new THREE.PlaneGeometry(2, 2, 8, 8)
   
-  // Create paper material
-  const material = useMemo(() => {
-    return new THREE.MeshStandardMaterial({
-      color: '#f8faf8',
-      side: THREE.DoubleSide,
-      roughness: 0.8,
-      metalness: 0.1,
-    })
-  }, [])
+  // Create subtle fold effect
+  const positions = geometry.attributes.position
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i)
+    const y = positions.getY(i)
+    const z = Math.sin(x * Math.PI) * Math.cos(y * Math.PI) * 0.1
+    positions.setZ(i, z)
+  }
+  positions.needsUpdate = true
 
-  // Create fold line geometry
-  const lineGeometry = useMemo(() => {
-    const geometry = new THREE.BufferGeometry()
-    const points = new Float32Array([0, -1, 0, 0, 1, 0])
-    geometry.setAttribute('position', new THREE.BufferAttribute(points, 3))
-    return geometry
-  }, [])
-
-  const lineMaterial = useMemo(() => {
-    return new THREE.LineBasicMaterial({ color: '#7fa67f' })
-  }, [])
-
-  // Animate the fold
   useFrame((state) => {
-    if (leftHalfRef.current && rightHalfRef.current && groupRef.current) {
-      // Convert angle to radians
-      const radians = (foldAngle * Math.PI) / 180
-      
-      // Rotate left half around the center line
-      leftHalfRef.current.rotation.y = -radians
-      rightHalfRef.current.rotation.y = radians
-      
-      // Slight floating animation
-      const float = Math.sin(state.clock.elapsedTime * 0.5) * 0.05
-      groupRef.current.position.y = float
+    if (meshRef.current) {
+      meshRef.current.rotation.x = rotation[0] + Math.sin(state.clock.elapsedTime * 0.5) * 0.1
+      meshRef.current.rotation.y = rotation[1] + Math.sin(state.clock.elapsedTime * 0.3) * 0.1
+      meshRef.current.rotation.z = rotation[2] + Math.sin(state.clock.elapsedTime * 0.4) * 0.05
     }
   })
 
+  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation()
+    setHovered(true)
+  }
+
+  const handlePointerOut = () => setHovered(false)
+  const handleClick = () => setClicked(!clicked)
+
   return (
-    <group ref={groupRef}>
-      {/* Left half of paper */}
+    <group position={position}>
+      {/* Main paper mesh */}
       <mesh
-        ref={leftHalfRef}
+        ref={meshRef}
         geometry={geometry}
-        material={material}
-        position={[-0.5, 0, 0]}
-        castShadow
-        receiveShadow
-      />
+        scale={scale * (hovered ? 1.05 : 1)}
+        onPointerOver={interactive ? handlePointerOver : undefined}
+        onPointerOut={interactive ? handlePointerOut : undefined}
+        onClick={interactive ? handleClick : undefined}
+      >
+        <meshLambertMaterial 
+          color={hovered ? '#f0e6d2' : color}
+          side={THREE.DoubleSide}
+          transparent
+          opacity={0.9}
+        />
+      </mesh>
       
-      {/* Right half of paper */}
+      {/* Shadow mesh */}
       <mesh
-        ref={rightHalfRef}
         geometry={geometry}
-        material={material}
-        position={[0.5, 0, 0]}
-        castShadow
-        receiveShadow
-      />
+        position={[0.1, -0.1, -0.01]}
+        scale={scale}
+      >
+        <meshBasicMaterial 
+          color="#d0c4b0"
+          transparent
+          opacity={0.3}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
       
-      {/* Fold line indicator */}
-      <primitive object={new THREE.Line(lineGeometry, lineMaterial)} position={[0, 0, 0.01]} />
+      {/* Fold lines */}
+      <primitive 
+        object={new THREE.EdgesGeometry(geometry)} 
+      />
     </group>
   )
 }

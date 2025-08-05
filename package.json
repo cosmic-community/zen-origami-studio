@@ -12,16 +12,19 @@
   },
   "dependencies": {
     "@cosmicjs/sdk": "^1.5.5",
+    "@react-three/drei": "^9.88.13",
+    "@react-three/fiber": "^8.15.11",
+    "lucide-react": "^0.292.0",
     "next": "^15.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "three": "^0.160.0",
-    "@types/three": "^0.160.0"
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@types/three": "^0.160.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.0.0",
     "eslint-config-next": "^15.0.0",
