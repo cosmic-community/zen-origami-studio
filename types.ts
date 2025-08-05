@@ -169,6 +169,48 @@ export interface SakuraPetal {
   speed: number;
 }
 
+// Paper Crane 3D animation interface
+export interface CraneAnimation {
+  currentStep: number;
+  isAnimating: boolean;
+  foldProgress: number;
+}
+
+// Meditation and mindfulness types
+export interface MeditativeQuote {
+  id: string;
+  text: string;
+  author?: string;
+  category: 'focus' | 'patience' | 'presence' | 'transformation';
+}
+
+export interface AmbientSound {
+  id: string;
+  name: string;
+  src: string;
+  duration: number;
+  category: 'nature' | 'traditional' | 'minimal';
+}
+
+// Tutorial step animation interface
+export interface StepTransition {
+  from: number;
+  to: number;
+  duration: number;
+  easing: 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+}
+
 // Utility types
 export type CreateTutorialData = Omit<OrigamiTutorial, 'id' | 'created_at' | 'modified_at'>;
 export type CreateStepData = Omit<TutorialStep, 'id' | 'created_at' | 'modified_at'>;
+
+// Hook return types
+export interface UseAmbientSoundReturn {
+  isPlaying: boolean;
+  currentTrack: AmbientSound | null;
+  volume: number;
+  play: () => void;
+  pause: () => void;
+  changeTrack: (trackId: string) => void;
+  setVolume: (volume: number) => void;
+}

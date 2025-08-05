@@ -2,85 +2,193 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --primary-50: #fefdf8;
-  --primary-100: #fefcf0;
-  --primary-200: #fef7de;
-  --primary-300: #feefc7;
-  --primary-400: #fde68a;
-  --primary-500: #f59e0b;
-  --primary-600: #d97706;
-  --primary-700: #b45309;
-  --primary-800: #92400e;
-  --primary-900: #78350f;
+  --zen-50: 248 250 247;
+  --zen-100: 240 244 236;
+  --zen-200: 221 231 210;
+  --zen-300: 196 212 176;
+  --zen-400: 166 189 135;
+  --zen-500: 141 165 104;
+  --zen-600: 113 136 81;
+  --zen-700: 90 108 66;
+  --zen-800: 73 86 55;
+  --zen-900: 61 71 47;
   
-  --secondary-50: #f8fafc;
-  --secondary-100: #f1f5f9;
-  --secondary-200: #e2e8f0;
-  --secondary-300: #cbd5e1;
-  --secondary-400: #94a3b8;
-  --secondary-500: #64748b;
-  --secondary-600: #475569;
-  --secondary-700: #334155;
-  --secondary-800: #1e293b;
-  --secondary-900: #0f172a;
+  --sage-50: 246 247 244;
+  --sage-100: 234 237 228;
+  --sage-200: 214 220 201;
+  --sage-300: 184 196 164;
+  --sage-400: 150 167 124;
+  --sage-500: 122 139 94;
+  --sage-600: 95 110 72;
+  --sage-700: 76 86 59;
+  --sage-800: 63 70 50;
+  --sage-900: 54 60 44;
+  
+  --sakura-50: 254 247 247;
+  --sakura-100: 253 238 240;
+  --sakura-200: 252 226 229;
+  --sakura-300: 249 202 210;
+  --sakura-400: 244 164 180;
+  --sakura-500: 236 124 151;
+  --sakura-600: 222 90 124;
+  --sakura-700: 201 61 99;
+  --sakura-800: 167 51 86;
+  --sakura-900: 140 46 77;
 }
 
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    line-height: 1.6;
+    background: linear-gradient(135deg, rgb(var(--sage-50)) 0%, rgb(var(--zen-50)) 100%);
+    min-height: 100vh;
+  }
+  
+  html {
+    scroll-behavior: smooth;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: 1.2;
+    font-weight: 500;
+    line-height: 1.3;
   }
 }
 
 @layer components {
-  .btn-primary {
-    @apply bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200;
+  /* Zen design system components */
+  .zen-card {
+    @apply bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 transition-all duration-300;
   }
   
-  .btn-secondary {
-    @apply bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium px-6 py-3 rounded-lg transition-colors duration-200;
+  .zen-card:hover {
+    @apply shadow-zen bg-white/80;
   }
   
-  .card {
-    @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 transition-all duration-300;
+  .zen-button {
+    @apply bg-zen-500 hover:bg-zen-600 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg;
   }
   
-  .card-hover {
-    @apply hover:shadow-xl hover:scale-105 hover:bg-white/90;
+  .zen-button-secondary {
+    @apply bg-sage-100 hover:bg-sage-200 text-sage-800 font-medium px-6 py-3 rounded-xl transition-all duration-200 border border-sage-200 hover:border-sage-300;
   }
   
-  .glass {
-    @apply bg-white/20 backdrop-blur-md border border-white/30;
+  .zen-button-outline {
+    @apply border-2 border-zen-400 text-zen-600 hover:bg-zen-50 font-medium px-6 py-3 rounded-xl transition-all duration-200;
   }
   
-  .zen-gradient {
-    @apply bg-gradient-to-br from-stone-50 via-amber-50 to-orange-50;
+  .zen-heading {
+    @apply font-zen font-light tracking-wide;
   }
   
-  .text-gradient {
-    @apply bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent;
+  .zen-text-primary {
+    @apply text-zen-800;
   }
   
-  .floating-animation {
+  .zen-text-secondary {
+    @apply text-zen-600;
+  }
+  
+  .zen-text {
+    @apply text-zen-700;
+  }
+  
+  .meditation-fade {
+    animation: meditation-fade 2s ease-out;
+  }
+  
+  .gentle-slide {
+    animation: gentle-slide 1.5s ease-out;
+  }
+  
+  .rice-paper-bg {
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(var(--zen-200), 0.3) 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, rgba(var(--sage-200), 0.3) 1px, transparent 1px),
+      radial-gradient(circle at 40% 60%, rgba(var(--bamboo-200), 0.2) 1px, transparent 1px);
+    background-size: 50px 50px, 30px 30px, 70px 70px;
+  }
+  
+  .filter-paper {
+    filter: sepia(10%) contrast(110%) brightness(105%) saturate(90%);
+  }
+  
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(var(--zen-500));
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+  }
+  
+  .slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(var(--zen-500));
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
+  /* Zen-specific animations */
+  .breathing {
+    animation: breathe 4s ease-in-out infinite;
+  }
+  
+  .floating {
     animation: float 6s ease-in-out infinite;
   }
   
-  .sakura-fall {
-    animation: sakuraFall 10s linear infinite;
+  /* Paper fold effect */
+  .paper-fold {
+    position: relative;
+    transform-style: preserve-3d;
+  }
+  
+  .paper-fold::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(var(--zen-400), 0.3), transparent);
+    transform: translateX(-50%);
+  }
+  
+  /* Loading states */
+  .zen-spinner {
+    @apply w-8 h-8 border-3 border-zen-200 border-t-zen-500 rounded-full animate-spin;
+  }
+  
+  /* Focus styles for accessibility */
+  .zen-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-zen-400 focus:ring-offset-2 focus:ring-offset-white/50;
+  }
+  
+  /* Line clamp utility */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
 @layer utilities {
-  .aspect-paper {
-    aspect-ratio: 1 / 1;
-  }
-  
   .perspective-1000 {
     perspective: 1000px;
   }
@@ -92,41 +200,10 @@
   .backface-hidden {
     backface-visibility: hidden;
   }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+  
+  .aspect-paper {
+    aspect-ratio: 1 / 1;
   }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes sakuraFall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out forwards;
 }
 
 /* Custom scrollbar */
@@ -135,79 +212,51 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: rgb(var(--zen-100));
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--zen-300));
+  border-radius: 4px;
+  transition: background 0.2s ease;
 }
 
-/* Focus styles for accessibility */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid #f59e0b;
-  outline-offset: 2px;
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--zen-400));
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(var(--zen-300), 0.3);
+  color: rgb(var(--zen-800));
 }
 
 /* Smooth transitions for interactive elements */
-button,
-a,
-.card {
+button, a, input, textarea {
   transition: all 0.2s ease-in-out;
 }
 
-/* Paper fold effect */
-.paper-fold {
-  position: relative;
-  transform-style: preserve-3d;
-}
-
-.paper-fold::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1), transparent);
-  transform: translateX(-50%);
-}
-
-/* Zen meditation breathing animation */
-.breathing {
-  animation: breathe 4s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% {
-    transform: scale(1);
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  50% {
-    transform: scale(1.05);
+  
+  html {
+    scroll-behavior: auto !important;
   }
 }
 
-/* Origami crane silhouette */
-.crane-silhouette {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-/* Loading spinner */
-.spinner {
-  border: 2px solid #f3f4f6;
-  border-top: 2px solid #f59e0b;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* High contrast support */
+@media (prefers-contrast: high) {
+  .zen-card {
+    @apply border-2 border-zen-400;
+  }
+  
+  .zen-text-secondary {
+    @apply text-zen-700;
+  }
 }

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Play, Pause, RotateCcw } from 'lucide-react'
+import { Play, Pause, RotateCcw, Settings } from 'lucide-react'
 
 // Dynamically import Canvas with no SSR to avoid React batching issues
 const Canvas = dynamic(
@@ -27,11 +27,12 @@ export default function InteractivePaperTool() {
   const [isAnimating, setIsAnimating] = useState(false)
   const [animationFrame, setAnimationFrame] = useState(0)
   const [isClient, setIsClient] = useState(false)
+  const [animationSpeed, setAnimationSpeed] = useState(50)
 
   // Use effect to check if we're on client side
-  useState(() => {
+  useEffect(() => {
     setIsClient(true)
-  })
+  }, [])
 
   const handleAnimate = () => {
     if (isAnimating) {
@@ -41,12 +42,16 @@ export default function InteractivePaperTool() {
 
     setIsAnimating(true)
     let frame = 0
+    const totalFrames = 100
     const animate = () => {
-      if (frame < 100) {
-        setFoldAngle((frame / 100) * 180)
+      if (frame < totalFrames && isAnimating) {
+        const progress = frame / totalFrames
+        // Use easing function for more natural animation
+        const easedProgress = 1 - Math.pow(1 - progress, 3)
+        setFoldAngle(easedProgress * 180)
         setAnimationFrame(frame)
         frame++
-        setTimeout(() => requestAnimationFrame(animate), 50)
+        setTimeout(() => requestAnimationFrame(animate), 101 - animationSpeed)
       } else {
         setIsAnimating(false)
       }
@@ -64,19 +69,21 @@ export default function InteractivePaperTool() {
     return (
       <div className="zen-card p-8 max-w-4xl mx-auto">
         <div className="h-96 w-full rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-zen-sage/10 to-zen-cream/20 flex items-center justify-center">
-          <div className="animate-pulse text-zen-sage">Loading 3D experience...</div>
+          <div className="zen-spinner"></div>
+          <span className="ml-3 zen-text-secondary">Loading 3D experience...</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="zen-card p-8 max-w-4xl mx-auto">
+    <div className="space-y-8">
       {/* 3D Canvas */}
-      <div className="h-96 w-full rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-zen-sage/10 to-zen-cream/20">
+      <div className="h-96 w-full rounded-2xl overflow-hidden bg-gradient-to-br from-sage-50 to-bamboo-50 shadow-inner">
         <Suspense fallback={
           <div className="h-full flex items-center justify-center">
-            <div className="animate-pulse text-zen-sage">Loading 3D experience...</div>
+            <div className="zen-spinner"></div>
+            <span className="ml-3 zen-text-secondary">Loading 3D experience...</span>
           </div>
         }>
           <Canvas
@@ -93,12 +100,16 @@ export default function InteractivePaperTool() {
               shadow-mapSize-width={2048}
               shadow-mapSize-height={2048}
             />
+            <pointLight position={[-10, -10, -5]} intensity={0.2} />
             <PaperMesh foldAngle={foldAngle} />
             <OrbitControls
               enableZoom={true}
               enablePan={false}
               minDistance={3}
               maxDistance={8}
+              autoRotate={false}
+              enableDamping={true}
+              dampingFactor={0.05}
             />
             <Environment preset="studio" />
           </Canvas>
@@ -108,7 +119,7 @@ export default function InteractivePaperTool() {
       {/* Controls */}
       <div className="space-y-6">
         {/* Manual Control */}
-        <div>
+        <div className="bg-white/50 rounded-xl p-6">
           <label className="block zen-text text-sm font-medium mb-3">
             Fold Angle: {Math.round(foldAngle)}°
           </label>
@@ -117,10 +128,34 @@ export default function InteractivePaperTool() {
             min="0"
             max="180"
             value={foldAngle}
-            onChange={(e) => setFoldAngle(Number(e.target.value))}
-            className="w-full h-2 bg-zen-sage/20 rounded-lg appearance-none cursor-pointer slider"
+            onChange={(e) => !isAnimating && setFoldAngle(Number(e.target.value))}
+            className="w-full h-2 bg-zen-200 rounded-lg appearance-none cursor-pointer slider zen-focus"
             disabled={isAnimating}
           />
+          <div className="flex justify-between text-xs zen-text-secondary mt-2">
+            <span>Flat (0°)</span>
+            <span>Half Fold (90°)</span>
+            <span>Complete Fold (180°)</span>
+          </div>
+        </div>
+
+        {/* Animation Speed Control */}
+        <div className="bg-white/50 rounded-xl p-6">
+          <label className="block zen-text text-sm font-medium mb-3">
+            Animation Speed: {animationSpeed}%
+          </label>
+          <input
+            type="range"
+            min="10"
+            max="100"
+            value={animationSpeed}
+            onChange={(e) => setAnimationSpeed(Number(e.target.value))}
+            className="w-full h-2 bg-sage-200 rounded-lg appearance-none cursor-pointer slider zen-focus"
+          />
+          <div className="flex justify-between text-xs zen-text-secondary mt-2">
+            <span>Slow & Mindful</span>
+            <span>Quick Practice</span>
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -128,7 +163,7 @@ export default function InteractivePaperTool() {
           <button
             onClick={handleAnimate}
             disabled={isAnimating}
-            className="zen-button flex items-center gap-2 px-6 py-3"
+            className="zen-button flex items-center gap-2 px-6 py-3 zen-focus disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isAnimating ? (
               <>
@@ -145,7 +180,8 @@ export default function InteractivePaperTool() {
 
           <button
             onClick={handleReset}
-            className="zen-button-outline flex items-center gap-2 px-6 py-3"
+            className="zen-button-outline flex items-center gap-2 px-6 py-3 zen-focus"
+            disabled={isAnimating}
           >
             <RotateCcw className="w-4 h-4" />
             Reset
@@ -154,29 +190,62 @@ export default function InteractivePaperTool() {
 
         {/* Progress indicator */}
         {isAnimating && (
-          <div className="text-center">
-            <div className="zen-text-secondary text-sm mb-2">
-              Animation Progress: {animationFrame}%
+          <div className="bg-white/50 rounded-xl p-4">
+            <div className="text-center mb-3">
+              <div className="zen-text-secondary text-sm mb-2">
+                Folding Progress: {animationFrame}%
+              </div>
+              <div className="w-full bg-zen-200 rounded-full h-2">
+                <div
+                  className="bg-zen-500 h-2 rounded-full transition-all duration-100"
+                  style={{ width: `${animationFrame}%` }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-zen-sage/20 rounded-full h-2">
-              <div
-                className="bg-zen-sage h-2 rounded-full transition-all duration-100"
-                style={{ width: `${animationFrame}%` }}
-              />
-            </div>
+            <p className="text-xs zen-text-secondary text-center italic">
+              "Breathe slowly and observe each movement..."
+            </p>
           </div>
         )}
       </div>
 
       {/* Instructions */}
-      <div className="mt-8 p-6 bg-zen-cream/30 rounded-xl">
-        <h3 className="zen-heading text-lg mb-3">How to Use</h3>
-        <ul className="zen-text-secondary space-y-2 text-sm">
-          <li>• Drag the slider to manually fold the paper</li>
-          <li>• Click "Animate Fold" to watch an automatic folding sequence</li>
-          <li>• Use your mouse to rotate and zoom the 3D view</li>
-          <li>• Click "Reset" to return to the flat position</li>
-        </ul>
+      <div className="bg-white/50 rounded-xl p-6">
+        <h3 className="zen-heading text-lg mb-4 zen-text-primary">How to Use the Virtual Paper</h3>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="font-medium zen-text mb-2 flex items-center gap-2">
+              <span className="w-6 h-6 bg-zen-500 text-white rounded-full flex items-center justify-center text-sm">1</span>
+              Interactive Controls
+            </h4>
+            <ul className="zen-text-secondary space-y-1 text-sm ml-8">
+              <li>• Drag the fold slider to practice manual folding</li>
+              <li>• Use mouse to rotate and examine the paper</li>
+              <li>• Scroll to zoom in for detailed observation</li>
+              <li>• Adjust animation speed for your learning pace</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-medium zen-text mb-2 flex items-center gap-2">
+              <span className="w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm">2</span>
+              Mindful Practice
+            </h4>
+            <ul className="zen-text-secondary space-y-1 text-sm ml-8">
+              <li>• Take deep breaths with each fold</li>
+              <li>• Focus on the paper's transformation</li>
+              <li>• Notice how light plays on the surfaces</li>
+              <li>• Practice patience with slow animations</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="mt-6 p-4 bg-zen-100 rounded-lg border-l-4 border-zen-400">
+          <p className="zen-text italic text-center font-calligraphy text-lg">
+            "In the stillness of practice, we find the rhythm of creation. Each fold teaches patience, each crease reveals beauty."
+          </p>
+        </div>
       </div>
     </div>
   )

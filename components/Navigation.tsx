@@ -16,11 +16,11 @@ export default function Navigation() {
   }, [])
 
   const navItems = [
-    { href: '#home', label: 'Home' },
-    { href: '#interactive', label: 'Interactive Tool' },
-    { href: '#tutorials', label: 'Tutorials' },
-    { href: '#collections', label: 'Collections' },
-    { href: '#papers', label: 'Papers' },
+    { href: '#home', label: 'Home', icon: '🏠' },
+    { href: '#interactive', label: 'Interactive Tool', icon: '🎨' },
+    { href: '#tutorials', label: 'Tutorials', icon: '📖' },
+    { href: '#collections', label: 'Collections', icon: '🌸' },
+    { href: '#papers', label: 'Papers', icon: '📜' },
   ]
 
   const scrollToSection = (href: string) => {
@@ -44,9 +44,10 @@ export default function Navigation() {
           {/* Logo */}
           <button
             onClick={() => scrollToSection('#home')}
-            className="font-zen text-xl zen-text-primary hover:text-zen-600 transition-colors"
+            className="font-zen text-xl zen-text-primary hover:text-zen-600 transition-colors zen-focus flex items-center gap-2"
           >
-            Zen Origami Studio
+            <span className="text-2xl">🕊️</span>
+            <span>Zen Origami Studio</span>
           </button>
 
           {/* Desktop Navigation */}
@@ -55,9 +56,10 @@ export default function Navigation() {
               <button
                 key={item.href}
                 onClick={() => scrollToSection(item.href)}
-                className="zen-text-secondary hover:text-zen-600 transition-colors font-medium"
+                className="zen-text-secondary hover:text-zen-600 transition-colors font-medium zen-focus flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zen-50/50"
               >
-                {item.label}
+                <span className="text-sm">{item.icon}</span>
+                <span>{item.label}</span>
               </button>
             ))}
           </div>
@@ -65,7 +67,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden zen-text-primary hover:text-zen-600 transition-colors"
+            className="md:hidden zen-text-primary hover:text-zen-600 transition-colors zen-focus"
             aria-label="Toggle menu"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -79,9 +81,10 @@ export default function Navigation() {
               <button
                 key={item.href}
                 onClick={() => scrollToSection(item.href)}
-                className="block w-full text-left px-4 py-3 zen-text-secondary hover:text-zen-600 hover:bg-zen-50/50 transition-all"
+                className="flex items-center gap-3 w-full text-left px-4 py-3 zen-text-secondary hover:text-zen-600 hover:bg-zen-50/50 transition-all zen-focus"
               >
-                {item.label}
+                <span className="text-lg">{item.icon}</span>
+                <span>{item.label}</span>
               </button>
             ))}
           </div>
