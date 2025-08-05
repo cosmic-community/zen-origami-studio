@@ -8,10 +8,17 @@ export interface CosmicObject {
   type: string;
   created_at: string;
   modified_at: string;
+  status?: string;
+  thumbnail?: string;
+  published_at?: string;
+  modified_by?: string;
+  created_by?: string;
+  publish_at?: string | null;
+  bucket?: string;
 }
 
 // Specific object types with proper metadata interfaces
-export interface OrigarniTutorial extends CosmicObject {
+export interface OrigamiTutorial extends CosmicObject {
   type: 'origami-tutorials';
   metadata: {
     tutorial_name?: string;
@@ -25,8 +32,8 @@ export interface OrigarniTutorial extends CosmicObject {
       url: string;
       imgix_url: string;
     };
-    paper_type?: PaperType;
-    collection?: Collection;
+    paper_type?: PaperType | string;
+    collection?: Collection | string;
     meditative_message?: string;
   };
 }
@@ -41,7 +48,7 @@ export interface TutorialStep extends CosmicObject {
       url: string;
       imgix_url: string;
     };
-    tutorial?: OrigarniTutorial;
+    tutorial?: OrigamiTutorial;
     mindful_tip?: string;
   };
 }
@@ -81,12 +88,12 @@ export type DifficultyLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 export interface CosmicResponse<T> {
   objects: T[];
   total: number;
-  limit: number;
-  skip: number;
+  limit?: number;
+  skip?: number;
 }
 
 // Type guards for runtime validation
-export function isOrigarniTutorial(obj: CosmicObject): obj is OrigarniTutorial {
+export function isOrigamiTutorial(obj: CosmicObject): obj is OrigamiTutorial {
   return obj.type === 'origami-tutorials';
 }
 
@@ -104,7 +111,7 @@ export function isPaperType(obj: CosmicObject): obj is PaperType {
 
 // Component prop interfaces
 export interface TutorialCardProps {
-  tutorial: OrigarniTutorial;
+  tutorial: OrigamiTutorial;
   className?: string;
   onClick?: () => void;
 }
@@ -166,5 +173,5 @@ export interface SakuraPetal {
 }
 
 // Utility types
-export type CreateTutorialData = Omit<OrigarniTutorial, 'id' | 'created_at' | 'modified_at'>;
+export type CreateTutorialData = Omit<OrigamiTutorial, 'id' | 'created_at' | 'modified_at'>;
 export type CreateStepData = Omit<TutorialStep, 'id' | 'created_at' | 'modified_at'>;

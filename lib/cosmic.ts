@@ -1,4 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk';
+import { OrigamiTutorial, TutorialStep, Collection, PaperType, CosmicObject } from '@/types';
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -13,13 +14,13 @@ function hasStatus(error: unknown): error is { status: number } {
 }
 
 // Fetch all origami tutorials
-export async function getTutorials() {
+export async function getTutorials(): Promise<OrigamiTutorial[]> {
   try {
     const response = await cosmic.objects
       .find({ type: 'origami-tutorials' })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
-    return response.objects;
+    return response.objects as OrigamiTutorial[];
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return [];
@@ -29,13 +30,13 @@ export async function getTutorials() {
 }
 
 // Fetch tutorial by slug
-export async function getTutorialBySlug(slug: string) {
+export async function getTutorialBySlug(slug: string): Promise<OrigamiTutorial | null> {
   try {
     const response = await cosmic.objects
       .findOne({ type: 'origami-tutorials', slug })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
-    return response.object;
+    return response.object as OrigamiTutorial;
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return null;
@@ -45,7 +46,7 @@ export async function getTutorialBySlug(slug: string) {
 }
 
 // Fetch tutorial steps for a specific tutorial
-export async function getTutorialSteps(tutorialId: string) {
+export async function getTutorialSteps(tutorialId: string): Promise<TutorialStep[]> {
   try {
     const response = await cosmic.objects
       .find({ 
@@ -56,7 +57,7 @@ export async function getTutorialSteps(tutorialId: string) {
       .depth(1);
     
     // Sort steps by step number
-    const steps = response.objects.sort((a, b) => {
+    const steps = (response.objects as TutorialStep[]).sort((a: TutorialStep, b: TutorialStep) => {
       const stepA = a.metadata?.step_number || 0;
       const stepB = b.metadata?.step_number || 0;
       return stepA - stepB;
@@ -72,13 +73,13 @@ export async function getTutorialSteps(tutorialId: string) {
 }
 
 // Fetch all collections
-export async function getCollections() {
+export async function getCollections(): Promise<Collection[]> {
   try {
     const response = await cosmic.objects
       .find({ type: 'collections' })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
-    return response.objects;
+    return response.objects as Collection[];
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return [];
@@ -88,13 +89,13 @@ export async function getCollections() {
 }
 
 // Fetch all paper types
-export async function getPaperTypes() {
+export async function getPaperTypes(): Promise<PaperType[]> {
   try {
     const response = await cosmic.objects
       .find({ type: 'paper-types' })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
-    return response.objects;
+    return response.objects as PaperType[];
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return [];
@@ -104,7 +105,7 @@ export async function getPaperTypes() {
 }
 
 // Fetch tutorials by difficulty level
-export async function getTutorialsByDifficulty(difficulty: 'Beginner' | 'Intermediate' | 'Advanced') {
+export async function getTutorialsByDifficulty(difficulty: 'Beginner' | 'Intermediate' | 'Advanced'): Promise<OrigamiTutorial[]> {
   try {
     const response = await cosmic.objects
       .find({ 
@@ -113,7 +114,7 @@ export async function getTutorialsByDifficulty(difficulty: 'Beginner' | 'Interme
       })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
-    return response.objects;
+    return response.objects as OrigamiTutorial[];
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return [];
@@ -123,7 +124,7 @@ export async function getTutorialsByDifficulty(difficulty: 'Beginner' | 'Interme
 }
 
 // Fetch tutorials by collection
-export async function getTutorialsByCollection(collectionId: string) {
+export async function getTutorialsByCollection(collectionId: string): Promise<OrigamiTutorial[]> {
   try {
     const response = await cosmic.objects
       .find({ 
@@ -132,7 +133,7 @@ export async function getTutorialsByCollection(collectionId: string) {
       })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
-    return response.objects;
+    return response.objects as OrigamiTutorial[];
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return [];

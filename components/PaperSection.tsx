@@ -1,5 +1,6 @@
 import { getPaperTypes } from '@/lib/cosmic'
 import PaperTypeCard from '@/components/PaperTypeCard'
+import { PaperType } from '@/types'
 
 export default async function PaperSection() {
   const paperTypes = await getPaperTypes()
@@ -30,7 +31,7 @@ export default async function PaperSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        {paperTypes.map((paperType, index) => (
+        {paperTypes.map((paperType: PaperType, index: number) => (
           <div
             key={paperType.id}
             className="gentle-slide"

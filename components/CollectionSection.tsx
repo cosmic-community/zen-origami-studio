@@ -1,5 +1,6 @@
 import { getCollections } from '@/lib/cosmic'
 import CollectionCard from '@/components/CollectionCard'
+import { Collection } from '@/types'
 
 export default async function CollectionSection() {
   const collections = await getCollections()
@@ -30,7 +31,7 @@ export default async function CollectionSection() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        {collections.map((collection, index) => (
+        {collections.map((collection: Collection, index: number) => (
           <div
             key={collection.id}
             className="gentle-slide"

@@ -1,5 +1,6 @@
 import { getTutorials } from '@/lib/cosmic'
 import TutorialCard from '@/components/TutorialCard'
+import { OrigamiTutorial } from '@/types'
 
 export default async function TutorialSection() {
   const tutorials = await getTutorials()
@@ -30,7 +31,7 @@ export default async function TutorialSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {tutorials.map((tutorial, index) => (
+        {tutorials.map((tutorial: OrigamiTutorial, index: number) => (
           <div
             key={tutorial.id}
             className="gentle-slide"
