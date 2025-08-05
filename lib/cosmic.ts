@@ -1,14 +1,28 @@
 import { createBucketClient } from '@cosmicjs/sdk'
 
-// Initialize Cosmic client
+// Validate environment variables
+if (!process.env.COSMIC_BUCKET_SLUG) {
+  console.warn('COSMIC_BUCKET_SLUG environment variable is not set')
+}
+
+if (!process.env.COSMIC_READ_KEY) {
+  console.warn('COSMIC_READ_KEY environment variable is not set')
+}
+
+// Initialize Cosmic client with proper error handling
 const cosmic = createBucketClient({
-  bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
-  readKey: process.env.COSMIC_READ_KEY as string,
-  writeKey: process.env.COSMIC_WRITE_KEY as string,
+  bucketSlug: process.env.COSMIC_BUCKET_SLUG || '',
+  readKey: process.env.COSMIC_READ_KEY || '',
+  writeKey: process.env.COSMIC_WRITE_KEY || '',
 })
 
 export async function getTutorials() {
   try {
+    if (!process.env.COSMIC_BUCKET_SLUG || !process.env.COSMIC_READ_KEY) {
+      console.warn('Missing Cosmic environment variables, returning empty array')
+      return []
+    }
+    
     const { objects } = await cosmic.objects
       .find({ type: 'origami-tutorials' })
       .props(['id', 'title', 'slug', 'metadata'])
@@ -20,12 +34,18 @@ export async function getTutorials() {
     if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
-    throw error
+    // Return empty array instead of throwing to prevent app crashes
+    return []
   }
 }
 
 export async function getCollections() {
   try {
+    if (!process.env.COSMIC_BUCKET_SLUG || !process.env.COSMIC_READ_KEY) {
+      console.warn('Missing Cosmic environment variables, returning empty array')
+      return []
+    }
+    
     const { objects } = await cosmic.objects
       .find({ type: 'collections' })
       .props(['id', 'title', 'slug', 'metadata'])
@@ -37,12 +57,18 @@ export async function getCollections() {
     if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
-    throw error
+    // Return empty array instead of throwing to prevent app crashes
+    return []
   }
 }
 
 export async function getPaperTypes() {
   try {
+    if (!process.env.COSMIC_BUCKET_SLUG || !process.env.COSMIC_READ_KEY) {
+      console.warn('Missing Cosmic environment variables, returning empty array')
+      return []
+    }
+    
     const { objects } = await cosmic.objects
       .find({ type: 'paper-types' })
       .props(['id', 'title', 'slug', 'metadata'])
@@ -54,12 +80,18 @@ export async function getPaperTypes() {
     if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
-    throw error
+    // Return empty array instead of throwing to prevent app crashes
+    return []
   }
 }
 
 export async function getTutorialSteps(tutorialId?: string) {
   try {
+    if (!process.env.COSMIC_BUCKET_SLUG || !process.env.COSMIC_READ_KEY) {
+      console.warn('Missing Cosmic environment variables, returning empty array')
+      return []
+    }
+    
     let query: any = { type: 'tutorial-steps' }
     
     if (tutorialId) {
@@ -77,7 +109,8 @@ export async function getTutorialSteps(tutorialId?: string) {
     if (error && typeof error === 'object' && 'status' in error && (error as any).status === 404) {
       return []
     }
-    throw error
+    // Return empty array instead of throwing to prevent app crashes
+    return []
   }
 }
 

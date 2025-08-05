@@ -1,209 +1,213 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Zen+Antique+Soft:wght@400&family=Dancing+Script:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-50: #fefdf8;
+  --primary-100: #fefcf0;
+  --primary-200: #fef7de;
+  --primary-300: #feefc7;
+  --primary-400: #fde68a;
+  --primary-500: #f59e0b;
+  --primary-600: #d97706;
+  --primary-700: #b45309;
+  --primary-800: #92400e;
+  --primary-900: #78350f;
+  
+  --secondary-50: #f8fafc;
+  --secondary-100: #f1f5f9;
+  --secondary-200: #e2e8f0;
+  --secondary-300: #cbd5e1;
+  --secondary-400: #94a3b8;
+  --secondary-500: #64748b;
+  --secondary-600: #475569;
+  --secondary-700: #334155;
+  --secondary-800: #1e293b;
+  --secondary-900: #0f172a;
+}
+
 @layer base {
-  :root {
-    --zen-50: 248 250 248;
-    --zen-100: 240 244 240;
-    --zen-200: 221 232 221;
-    --zen-300: 196 214 196;
-    --zen-400: 163 191 163;
-    --zen-500: 127 166 127;
-    --zen-600: 101 137 101;
-    --zen-700: 79 111 79;
-    --zen-800: 63 90 63;
-    --zen-900: 50 72 50;
-    
-    --sage-50: 246 247 244;
-    --sage-100: 237 238 232;
-    --sage-200: 217 221 209;
-    --sage-300: 191 197 178;
-    --sage-400: 160 167 140;
-    --sage-500: 133 140 111;
-    --sage-600: 106 112 87;
-    --sage-700: 85 90 71;
-    --sage-800: 70 73 60;
-    --sage-900: 59 62 52;
-    
-    --sakura-50: 254 247 247;
-    --sakura-100: 254 238 238;
-    --sakura-200: 253 220 220;
-    --sakura-300: 251 183 183;
-    --sakura-400: 246 138 138;
-    --sakura-500: 237 94 94;
-    --sakura-600: 216 59 59;
-    --sakura-700: 181 45 45;
-    --sakura-800: 150 40 40;
-    --sakura-900: 124 39 39;
-    
-    --bamboo-50: 247 248 245;
-    --bamboo-100: 238 240 234;
-    --bamboo-200: 220 224 213;
-    --bamboo-300: 193 201 182;
-    --bamboo-400: 163 173 146;
-    --bamboo-500: 135 145 116;
-    --bamboo-600: 108 117 92;
-    --bamboo-700: 86 93 74;
-    --bamboo-800: 70 76 62;
-    --bamboo-900: 58 64 52;
-  }
-
-  * {
-    border-color: hsl(var(--zen-200));
-  }
-
   body {
-    color: hsl(var(--zen-800));
-    background: linear-gradient(135deg, hsl(var(--zen-50)) 0%, hsl(var(--sage-50)) 100%);
-    min-height: 100vh;
     font-family: 'Inter', sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
-
-  html {
-    scroll-behavior: smooth;
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
   }
 }
 
 @layer components {
-  .zen-card {
-    @apply bg-white/80 backdrop-blur-sm border border-zen-200/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300;
+  .btn-primary {
+    @apply bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200;
   }
-
-  .zen-button {
-    @apply bg-zen-500 hover:bg-zen-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  
+  .btn-secondary {
+    @apply bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium px-6 py-3 rounded-lg transition-colors duration-200;
   }
-
-  .zen-button-secondary {
-    @apply bg-sage-500 hover:bg-sage-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  
+  .card {
+    @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 transition-all duration-300;
   }
-
-  .zen-text-primary {
-    @apply text-zen-800;
+  
+  .card-hover {
+    @apply hover:shadow-xl hover:scale-105 hover:bg-white/90;
   }
-
-  .zen-text-secondary {
-    @apply text-sage-700;
+  
+  .glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/30;
   }
-
-  .zen-heading {
-    @apply font-zen text-zen-800 tracking-wide;
-  }
-
+  
   .zen-gradient {
-    @apply bg-gradient-to-br from-zen-100 via-sage-50 to-bamboo-100;
+    @apply bg-gradient-to-br from-stone-50 via-amber-50 to-orange-50;
   }
-
-  .floating-element {
-    @apply animate-float;
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent;
   }
-
-  .drift-element {
-    @apply animate-drift opacity-30;
+  
+  .floating-animation {
+    animation: float 6s ease-in-out infinite;
   }
-
-  .rice-paper-bg {
-    @apply bg-rice-paper;
-  }
-
-  .bamboo-texture-bg {
-    @apply bg-bamboo-texture;
-  }
-
-  .meditation-fade {
-    @apply animate-fade-in;
-  }
-
-  .gentle-slide {
-    @apply animate-slide-up;
-  }
-
-  .soft-pulse {
-    @apply animate-pulse-soft;
-  }
-
-  .zen-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--zen-300)) hsl(var(--zen-100));
-  }
-
-  .zen-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .zen-scrollbar::-webkit-scrollbar-track {
-    background: hsl(var(--zen-100));
-    border-radius: 3px;
-  }
-
-  .zen-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--zen-300));
-    border-radius: 3px;
-  }
-
-  .zen-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--zen-400));
+  
+  .sakura-fall {
+    animation: sakuraFall 10s linear infinite;
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .aspect-paper {
+    aspect-ratio: 1 / 1;
   }
-
-  .filter-paper {
-    filter: sepia(10%) saturate(80%) brightness(105%) contrast(95%);
+  
+  .perspective-1000 {
+    perspective: 1000px;
   }
-
-  .backdrop-paper {
-    backdrop-filter: blur(8px) brightness(102%) contrast(98%);
+  
+  .transform-3d {
+    transform-style: preserve-3d;
   }
-
-  .shadow-zen {
-    box-shadow: 0 10px 25px -5px rgba(127, 166, 127, 0.1), 0 4px 6px -2px rgba(127, 166, 127, 0.05);
-  }
-
-  .shadow-sakura {
-    box-shadow: 0 10px 25px -5px rgba(246, 138, 138, 0.1), 0 4px 6px -2px rgba(246, 138, 138, 0.05);
-  }
-
-  .shadow-sage {
-    box-shadow: 0 10px 25px -5px rgba(160, 167, 140, 0.1), 0 4px 6px -2px rgba(160, 167, 140, 0.05);
+  
+  .backface-hidden {
+    backface-visibility: hidden;
   }
 }
 
-/* Custom animations for peaceful experience */
-@keyframes breathe {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 0.8; 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
   }
-  50% { 
-    transform: scale(1.05); 
-    opacity: 1; 
+  50% {
+    transform: translateY(-20px);
   }
 }
 
-.breathe-animation {
-  animation: breathe 4s ease-in-out infinite;
+@keyframes sakuraFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 
-/* Smooth transitions for all interactive elements */
-* {
-  transition-property: color, background-color, border-color, transform, opacity, box-shadow;
-  transition-duration: 200ms;
-  transition-timing-function: ease-out;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Focus styles for accessibility */
-:focus {
-  outline: 2px solid hsl(var(--zen-500));
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #f59e0b;
   outline-offset: 2px;
 }
 
-/* Selection styling */
-::selection {
-  background-color: hsl(var(--sakura-200));
-  color: hsl(var(--zen-800));
+/* Smooth transitions for interactive elements */
+button,
+a,
+.card {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Paper fold effect */
+.paper-fold {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.paper-fold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1), transparent);
+  transform: translateX(-50%);
+}
+
+/* Zen meditation breathing animation */
+.breathing {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Origami crane silhouette */
+.crane-silhouette {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #f59e0b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
