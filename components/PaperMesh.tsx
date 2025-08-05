@@ -11,6 +11,7 @@ interface PaperMeshProps {
 export default function PaperMesh({ foldAngle }: PaperMeshProps) {
   const leftHalfRef = useRef<THREE.Mesh>(null)
   const rightHalfRef = useRef<THREE.Mesh>(null)
+  const groupRef = useRef<THREE.Group>(null)
 
   // Create geometry for paper halves
   const geometry = useMemo(() => new THREE.PlaneGeometry(1, 2, 10, 10), [])
@@ -39,7 +40,7 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
 
   // Animate the fold
   useFrame((state) => {
-    if (leftHalfRef.current && rightHalfRef.current) {
+    if (leftHalfRef.current && rightHalfRef.current && groupRef.current) {
       // Convert angle to radians
       const radians = (foldAngle * Math.PI) / 180
       
@@ -49,13 +50,12 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
       
       // Slight floating animation
       const float = Math.sin(state.clock.elapsedTime * 0.5) * 0.05
-      leftHalfRef.current.position.y = float
-      rightHalfRef.current.position.y = float
+      groupRef.current.position.y = float
     }
   })
 
   return (
-    <group>
+    <group ref={groupRef}>
       {/* Left half of paper */}
       <mesh
         ref={leftHalfRef}
@@ -77,10 +77,7 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
       />
       
       {/* Fold line indicator */}
-      <primitive
-        object={new THREE.Line(lineGeometry, lineMaterial)}
-        position={[0, 0, 0.01]}
-      />
+      <line geometry={lineGeometry} material={lineMaterial} position={[0, 0, 0.01]} />
     </group>
   )
 }

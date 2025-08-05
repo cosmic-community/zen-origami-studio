@@ -1,15 +1,37 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment } from '@react-three/drei'
-import PaperMesh from './PaperMesh'
+import dynamic from 'next/dynamic'
 import { Play, Pause, RotateCcw } from 'lucide-react'
+
+// Dynamically import Canvas with no SSR to avoid React batching issues
+const Canvas = dynamic(
+  () => import('@react-three/fiber').then((mod) => mod.Canvas),
+  { ssr: false }
+)
+
+const OrbitControls = dynamic(
+  () => import('@react-three/drei').then((mod) => mod.OrbitControls),
+  { ssr: false }
+)
+
+const Environment = dynamic(
+  () => import('@react-three/drei').then((mod) => mod.Environment),
+  { ssr: false }
+)
+
+const PaperMesh = dynamic(() => import('./PaperMesh'), { ssr: false })
 
 export default function InteractivePaperTool() {
   const [foldAngle, setFoldAngle] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [animationFrame, setAnimationFrame] = useState(0)
+  const [isClient, setIsClient] = useState(false)
+
+  // Use effect to check if we're on client side
+  useState(() => {
+    setIsClient(true)
+  })
 
   const handleAnimate = () => {
     if (isAnimating) {
@@ -38,6 +60,16 @@ export default function InteractivePaperTool() {
     setAnimationFrame(0)
   }
 
+  if (!isClient) {
+    return (
+      <div className="zen-card p-8 max-w-4xl mx-auto">
+        <div className="h-96 w-full rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-zen-sage/10 to-zen-cream/20 flex items-center justify-center">
+          <div className="animate-pulse text-zen-sage">Loading 3D experience...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="zen-card p-8 max-w-4xl mx-auto">
       {/* 3D Canvas */}
@@ -50,6 +82,8 @@ export default function InteractivePaperTool() {
           <Canvas
             camera={{ position: [0, 0, 5], fov: 50 }}
             shadows
+            gl={{ antialias: true, alpha: true }}
+            dpr={[1, 2]}
           >
             <ambientLight intensity={0.4} />
             <directionalLight
