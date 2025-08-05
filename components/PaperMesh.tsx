@@ -77,9 +77,8 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
       />
       
       {/* Fold line indicator */}
-      <line
-        geometry={lineGeometry}
-        material={lineMaterial}
+      <primitive
+        object={new THREE.Line(lineGeometry, lineMaterial)}
         position={[0, 0, 0.01]}
       />
     </group>
