@@ -75,7 +75,7 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
             itemSize={3}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#7fa67f" linewidth={2} />
+        <lineBasicMaterial color="#7fa67f" />
       </line>
     </group>
   )
