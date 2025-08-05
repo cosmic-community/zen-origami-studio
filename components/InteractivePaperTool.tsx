@@ -59,7 +59,7 @@ export default function InteractivePaperTool() {
         {/* 3D Canvas */}
         <div className="w-full h-96 rounded-xl overflow-hidden bg-gradient-to-br from-zen-50 to-sage-50 border border-zen-200/50">
           <Suspense fallback={<Loading />}>
-            <Canvas>
+            <Canvas shadows>
               <PerspectiveCamera makeDefault position={[0, 0, 5]} />
               <OrbitControls
                 enablePan={true}
@@ -75,8 +75,7 @@ export default function InteractivePaperTool() {
                 position={[5, 5, 5]}
                 intensity={0.8}
                 castShadow
-                shadow-mapSize-width={1024}
-                shadow-mapSize-height={1024}
+                shadow-mapSize={[1024, 1024]}
               />
               <pointLight position={[-5, 5, 5]} intensity={0.4} />
               

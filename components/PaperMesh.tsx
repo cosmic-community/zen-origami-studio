@@ -65,18 +65,18 @@ export default function PaperMesh({ foldAngle }: PaperMeshProps) {
         receiveShadow
       />
       
-      {/* Fold line indicator */}
-      <line>
+      {/* Fold line indicator - using simple geometry */}
+      <mesh position={[0, 0, 0.01]}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
             count={2}
-            array={new Float32Array([0, -1, 0.01, 0, 1, 0.01])}
+            array={new Float32Array([0, -1, 0, 0, 1, 0])}
             itemSize={3}
           />
         </bufferGeometry>
         <lineBasicMaterial color="#7fa67f" />
-      </line>
+      </mesh>
     </group>
   )
 }
